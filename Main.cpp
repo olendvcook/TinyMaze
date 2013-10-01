@@ -7,9 +7,8 @@ GAMESTATE mGameState = gMENU;
 MENUSTATE mMenuState = mMAIN;
 
 //main method for not console applications
-//int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
-
-int main()
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+//int main()
 {
 	//call game loop class
 	new GameLoop();
