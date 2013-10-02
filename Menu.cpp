@@ -106,9 +106,9 @@ void Menu::draw(sf::RenderWindow *window)
 	}
 }
 
-//TODO: BUG - clicking outside "back" button on credit screen and then clicking back button doesn't do anything
 //TODO: REWORK THIS ENTIRE METHOD CUS IT SUCKS
 //get input and do stuff based on that
+/*
 void Menu::input(sf::Event *pEvent, sf::RenderWindow *pWindow)
 {
 	sf::Vector2i mousePos = sf::Mouse::getPosition(*pWindow);
@@ -122,7 +122,7 @@ void Menu::input(sf::Event *pEvent, sf::RenderWindow *pWindow)
 			//check if mouse is over button (bounds checking)
 			if(pEvent->mouseButton.button == sf::Mouse::Left && mButtons.at(i).getBounds().contains(mousePos.x, mousePos.y))
 			{
-				mButtons.at(i).PressButton();
+				mButtons.at(i).ButtonEvent();
 			}
 		}
 		break;	
@@ -132,7 +132,6 @@ void Menu::input(sf::Event *pEvent, sf::RenderWindow *pWindow)
 		{
 			if(mButtons.at(i).isPressed())
 			{
-				mButtons.at(i).PressButton();
 				//tell the button to do its stuff
 				//we dont actually do anyhting on button press down, we wait till click release
 				//to do stuff
@@ -142,6 +141,48 @@ void Menu::input(sf::Event *pEvent, sf::RenderWindow *pWindow)
 		break;
 	}
 }
+*/
+
+//get input and do stuff based on that
+void Menu::input(sf::Event *pEvent, sf::RenderWindow *pWindow)
+{
+	sf::Vector2i mousePos = sf::Mouse::getPosition(*pWindow);
+	for(int i=0; i < mButtons.size(); i++)
+	{
+		switch(pEvent->type)
+		{
+		case(sf::Event::MouseButtonPressed):
+			if(pEvent->mouseButton.button == sf::Mouse::Left && mButtons.at(i).getBounds().contains(mousePos.x, mousePos.y))
+			{
+				mButtons.at(i).ButtonEvent();
+			}
+			break;
+		case(sf::Event::MouseLeft):
+			if(mButtons.at(i).isPressed())
+			{
+				mButtons.at(i).PressButton();
+			}
+			break;
+		case(sf::Event::MouseButtonReleased):
+			if(pEvent->mouseButton.button == sf::Mouse::Left && 
+				mButtons.at(i).isPressed() && 
+				mButtons.at(i).getBounds().contains(mousePos.x, mousePos.y))
+			{
+				//tell the button to do its stuff
+				//we dont actually do anyhting on button press down, we wait till click release
+				//to do stuff
+				mButtons.at(i).ButtonEvent();
+			}
+			else if (pEvent->mouseButton.button == sf::Mouse::Left && mButtons.at(i).isPressed())
+			{
+				mButtons.at(i).PressButton();
+			}
+			break;
+		}
+	}
+}
+
+
 //not implimented yet
 void Menu::reset()
 {

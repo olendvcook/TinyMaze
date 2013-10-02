@@ -23,27 +23,37 @@ void Button::ButtonEvent()
 {
 	//rather than a class for each button that extends this class, we store button type and use
 	//a switch statement to determine what to do
+
 	switch(mButtonType)
 	{
 	//do stuff based on what button it is
 	case(bSTART):
 		if(mMenuState == mMAIN)
 		{
+			if(isPressed())
+			{
 			mGameState = gGAME;
+			}
 			PressButton();
 		}
 		break;
 	case(bCREDITS):
 		if(mMenuState == mMAIN)
 		{
+			if(isPressed())
+			{
 			mMenuState = mCREDITS;
+			}
 			PressButton();
 		}
 		break;
 	case(bBACK):
 		if(mMenuState == mCREDITS)
 		{
+			if(isPressed())
+			{
 			mMenuState = mMAIN;
+			}
 			PressButton();
 		}
 		break;
