@@ -6,14 +6,6 @@ Game::Game(Textures *pSpriteSheet) :
 	mPlayer(sf::Vector2f(200,200), sf::Vector2f(0,0), sf::Vector2i(16,16), (pSpriteSheet->getTexture(sPLAYER)))
 {
 	//hardcoded enemies because time
-	//TODO: check if memory leak cause of new, am i gonna get wrecked when i remove these?
-	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(100,200), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(300,300), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(150,250), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(300,50), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(345,289), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(500,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(450,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
 	for(int i = 0; i < 100; i++)
 	{
 		addEnemy();
@@ -45,10 +37,7 @@ void Game::update()
 	//call each entity update
 	mPlayer.update();
 	for(int i = 0; i < mEnemies.size(); i++)
-	{
-		//delete(mEnemies.at(i));
-		//mEnemies.erase((mEnemies.begin() + i));
-		
+	{	
 		//bounds check each enemy with player
 		if(mPlayer.getPosition().x < (mEnemies[i]->getPosition().x - 50) && mPlayer.getPosition().x > (mEnemies[i]->getPosition().x - 80))
 			mEnemies[i]->setEnemyState(eRIGHT);
@@ -58,12 +47,14 @@ void Game::update()
 
 		//update enemy
 		mEnemies[i]->update();
-		//kill enemy if off screen
+
+		//collision detection with player
 		if(mEnemies[i]->getBounds().intersects(mPlayer.getBounds()))
 		{
 			removeEnemy(i);
 			continue;
 		}
+		//kill enemy if off screen
 		if(mEnemies[i]->getPosition().x > WindowWidth || mEnemies[i]->getPosition().x < 0)
 		{
 			removeEnemy(i);
@@ -113,9 +104,9 @@ void Game::input(sf::Event *pEvent)
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			mPlayer.setPlayerState(pUP);
 
+		//created to test for memory leaks
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 		{
-			//mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(450,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (mTextures->getTexture(sBURGER))));
 			addEnemy();
 		}
 		break;

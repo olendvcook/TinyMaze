@@ -1,7 +1,10 @@
 #include "GameLoop.h"
 #include <Windows.h>
 
+//use visual leak detector only in debug mode
+#ifdef _DEBUG
 #include <vld.h>
+#endif
 
 //extern variable declaration
 //extern global variables because many classes alter the states
@@ -13,6 +16,5 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 //int main()
 {
 	//call game loop class
-	GameLoop poop;
-
+	GameLoop mGameloop;
 }
