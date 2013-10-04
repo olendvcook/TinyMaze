@@ -17,6 +17,7 @@ private:
 	//store entities
 	Player mPlayer;
 	std::vector<Enemy*> mEnemies;
+	Textures *mTextures;
 public:
 	Game(Textures *pSpriteSheet);
 	virtual ~Game(void);
@@ -25,5 +26,8 @@ public:
 	void draw(sf::RenderWindow *window, float pInterpolation);
 	void input(sf::Event *pEvent);
 	void reset();
+	void addEnemy();
+	void removeEnemy(int pIndex);
+	void quit();
 };
 

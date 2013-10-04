@@ -2,13 +2,14 @@
 #include <iostream>
 
 //just call gameloop
-GameLoop::GameLoop(void)
+GameLoop::GameLoop(void) :
+	mSpriteSheet()
 {
 	loop();
 }
 
 
-GameLoop::~GameLoop(void)
+GameLoop::~GameLoop(void) 
 {
 }
 
@@ -62,7 +63,10 @@ void GameLoop::loop()
 		while (mWindow.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed)
+			{
+				mGame.quit();
 				mWindow.close();
+			}
 
 			switch(mGameState)
 			{

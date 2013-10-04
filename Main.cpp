@@ -1,6 +1,8 @@
 #include "GameLoop.h"
 #include <Windows.h>
 
+#include <vld.h>
+
 //extern variable declaration
 //extern global variables because many classes alter the states
 GAMESTATE mGameState = gMENU;
@@ -11,5 +13,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 //int main()
 {
 	//call game loop class
-	new GameLoop();
+	GameLoop poop;
+
 }

@@ -67,7 +67,7 @@ void Button::Draw(sf::RenderWindow *window)
 }
 
 //switch between button up and button down basically just to animate it
-void Button::PressButton()
+inline void Button::PressButton()
 {
 	mPressed = !mPressed;
 }

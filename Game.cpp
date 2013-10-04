@@ -2,20 +2,40 @@
 
 //takes in pointer to class that hold spritesheets so entities can be created with certain spritesheet
 Game::Game(Textures *pSpriteSheet) :
+	mTextures(pSpriteSheet),
 	mPlayer(sf::Vector2f(200,200), sf::Vector2f(0,0), sf::Vector2i(16,16), (pSpriteSheet->getTexture(sPLAYER)))
 {
 	//hardcoded enemies because time
-	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(100,200), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(300,300), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(150,250), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(300,50), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(345,289), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(500,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
-	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(450,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	//TODO: check if memory leak cause of new, am i gonna get wrecked when i remove these?
+	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(100,200), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(300,300), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(150,250), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(300,50), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(345,289), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(500,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	//mEnemies.insert(mEnemies.begin(), &Enemy(sf::Vector2f(450,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (pSpriteSheet->getTexture(sBURGER))));
+	for(int i = 0; i < 100; i++)
+	{
+		addEnemy();
+	}
 }
 
 Game::~Game(void)
 {
+}
+
+//TODO: paramertertize this method to input the valuves to be used for the enemies
+void Game::addEnemy()
+{
+	//if no delete before removed u get memory leaks
+	mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(450,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (mTextures->getTexture(sBURGER))));
+	
+}
+
+void Game::removeEnemy(int pIndex)
+{
+	delete(mEnemies.at(pIndex));
+	mEnemies.erase((mEnemies.begin() + pIndex));
 }
 
 //update method used during game state
@@ -26,6 +46,9 @@ void Game::update()
 	mPlayer.update();
 	for(int i = 0; i < mEnemies.size(); i++)
 	{
+		//delete(mEnemies.at(i));
+		//mEnemies.erase((mEnemies.begin() + i));
+		
 		//bounds check each enemy with player
 		if(mPlayer.getPosition().x < (mEnemies[i]->getPosition().x - 50) && mPlayer.getPosition().x > (mEnemies[i]->getPosition().x - 80))
 			mEnemies[i]->setEnemyState(eRIGHT);
@@ -38,25 +61,25 @@ void Game::update()
 		//kill enemy if off screen
 		if(mEnemies[i]->getBounds().intersects(mPlayer.getBounds()))
 		{
-			mEnemies.erase((mEnemies.begin() + i));
+			removeEnemy(i);
 			continue;
 		}
 		if(mEnemies[i]->getPosition().x > WindowWidth || mEnemies[i]->getPosition().x < 0)
 		{
-			mEnemies.erase((mEnemies.begin() + i));
+			removeEnemy(i);
 			continue;
 		}
 		if(mEnemies[i]->getPosition().y > WindowHeight || mEnemies[i]->getPosition().y < 0)
 		{
-			mEnemies.erase((mEnemies.begin() + i));
+			removeEnemy(i);
 			continue;
 		}
-
+		
 	}
 	
 	//check for gameover state
-	if(mEnemies.size() == 0)
-		mGameState = gGAMEOVER;
+	//if(mEnemies.size() == 0)
+	//	mGameState = gGAMEOVER;
 	
 }
 
@@ -89,6 +112,12 @@ void Game::input(sf::Event *pEvent)
 		
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 			mPlayer.setPlayerState(pUP);
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+		{
+			//mEnemies.insert(mEnemies.begin(), new Enemy(sf::Vector2f(450,400), sf::Vector2f(0,0), sf::Vector2i(32,32), (mTextures->getTexture(sBURGER))));
+			addEnemy();
+		}
 		break;
 	case(sf::Event::KeyReleased):
 		mPlayer.setPlayerState(pNONE);
@@ -101,4 +130,14 @@ void Game::input(sf::Event *pEvent)
 //TODO: impliment reset
 void Game::reset()
 {
+}
+
+//handle memory leaks before quitting
+void Game::quit()
+{
+	//we go down because when we remove from front, everything shifts down
+	for(int i = mEnemies.size() - 1; i >= 0; i--)
+	{
+		removeEnemy(i);
+	}
 }
